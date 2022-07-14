@@ -47,6 +47,7 @@ import cz.muni.fi.mir.mathmlunificator.MathMLUnificator;
 import cz.muni.fi.mir.mathmlunificator.config.Constants;
 import cz.muni.fi.mir.mathmlunificator.utils.XMLOut;
 import java.util.Arrays;
+import org.apache.lucene.util.AttributeFactory;
 
 /**
  * Implementation of Lucene Tokenizer. Provides math formulae contained in the
@@ -147,35 +148,12 @@ public class MathTokenizer extends Tokenizer {
 
     }
 
-    /**
-     * @param input Reader containing the input to process
-     * @param subformulae if <em>{@code true}, subformulae will be
-     * extracted</em> and weight of derived subformulae (i.e. extracted
-     * subformulae, variants with unified variables, constants etc.) <em>will be
-     * reduced</em>; if <em>{@code false}, only top level formulae will be
-     * processed</em> and weight of their modified variants (variable
-     * unification etc. only, no subformulae extraction!) <em>will not be
-     * reduced</em>.
-     * @param type type of MathML that should be processed
-     */
-    public MathTokenizer(Reader input, boolean subformulae, MathMLType type) {
-        this(input, subformulae, type, subformulae);
-    }
+    public MathTokenizer(AttributeFactory factory) {
+        super(factory);
 
-    /**
-     * @param input Reader containing the input to process
-     * @param subformulae if {@code true}, subformulae will be extracted
-     * @param type type of MathML that should be processed
-     * @param reduceWeighting if {@code true}, reduce weight of derived
-     * subformulae (i.e. variants with unified variables, constants, extracted
-     * subformulae etc.)
-     */
-    public MathTokenizer(Reader input, boolean subformulae, MathMLType type, boolean reduceWeighting) {
-        super(input);
-
-        this.mmlType = type;
-        this.subformulae = subformulae;
-        this.reduceWeighting = reduceWeighting;
+        this.mmlType = MathMLType.CONTENT;
+        this.subformulae = false;
+        this.reduceWeighting = false;
 
         // For search or equal weighting do not penalize any of formulae we search with
         if (!this.reduceWeighting) {
